@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0B1F44">
+<title>VitchCalc - Smart Calculator</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #071326;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+}
+
+.app {
+  width: 100%;
+  max-width: 440px;
+  min-height: 100vh;
+  padding: 22px 18px;
+  background: linear-gradient(160deg,#10264b,#071326 65%);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
+}
+
+.logo {
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.logo span { color: #00D4FF; }
+
+.tagline {
+  color: #8da7c9;
+  font-size: 11px;
+  margin-top: 5px;
+}
+
+.history-btn {
+  background: #19365c;
+  color: #00D4FF;
+  border: 1px solid #28517c;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 13px;
+}
+
+.display {
+  background: #081a33;
+  border: 1px solid #23466d;
+  border-radius: 20px;
+  padding: 25px 18px;
+  margin-bottom: 20px;
+  min-height: 145px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  text-align: right;
+  overflow: hidden;
+}
+
+#expression {
+  color: #8da7c9;
+  font-size: 20px;
+  min-height: 30px;
+  overflow-wrap: anywhere;
+}
+
+#result {
+  color: #00D4FF;
+  font-size: 42px;
+  font-weight: 700;
+  margin-top: 10px;
+  overflow-wrap: anywhere;
+}
+
+.scientific, .keypad {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 10px;
+  margin-bottom: 13px;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.key {
+  height: 66px;
+  border-radius: 17px;
+  background: #172f52;
+  color: white;
+  font-size: 23px;
+  font-weight: 600;
+  box-shadow: 0 4px 10px #0003;
+}
+
+.key:active { transform: scale(.95); }
+
+.operator {
+  background: #075d91;
+  color: #00D4FF;
+}
+
+.function {
+  height: 46px;
+  border-radius: 12px;
+  background: #102b4c;
+  color: #70dcff;
+  font-size: 15px;
+}
+
+.equal {
+  background: linear-gradient(135deg,#00a8e8,#00D4FF);
+  color: #06172b;
+}
+
+.danger { color: #ff8585; }
+
+.history-panel {
+  display: none;
+  background: #10264a;
+  border: 1px solid #28517c;
+  border-radius: 15px;
+  padding: 15px;
+  margin-top: 15px;
+}
+
+.history-item {
+  padding: 12px 4px;
+  border-bottom: 1px solid #29405d;
+  color: #c8dcf5;
+  overflow-wrap: anywhere;
+}
+
+.history-item strong {
+  display: block;
+  color: #00D4FF;
+  margin-top: 5px;
+}
+
+.clear-history {
+  background: #263e5e;
+  color: white;
+  padding: 10px;
+  border-radius: 9px;
+  margin-top: 12px;
+}
+
+footer {
+  text-align: center;
+  color: #728ba9;
+  font-size: 11px;
+  margin-top: 30px;
+  letter-spacing: 1px;
+}
+</style>
+</head>
+
+<body>
+<main class="app">
+
+<header>
+  <div>
+    <div class="logo">VITCH<span>CALC</span></div>
+    <div class="tagline">SMART CALCULATOR</div>
+  </div>
+  <button class="history-btn" onclick="toggleHistory()">◷ History</button>
+</header>
+
+<section class="display">
+  <div id="expression">Ready to calculate</div>
+  <div id="result">0</div>
+</section>
+
+<section class="scientific">
+  <button class="function" onclick="add('sin(')">sin</button>
+  <button class="function" onclick="add('cos(')">cos</button>
+  <button class="function" onclick="add('tan(')">tan</button>
+  <button class="function" onclick="add('sqrt(')">√</button>
+  <button class="function" onclick="add('log(')">log</button>
+  <button class="function" onclick="add('ln(')">ln</button>
+  <button class="function" onclick="add('pi')">π</button>
+  <button class="function" onclick="add('^2')">x²</button>
+</section>
+
+<section class="keypad">
+  <button class="key danger" onclick="clearAll()">AC</button>
+  <button class="key" onclick="backspace()">⌫</button>
+  <button class="key" onclick="add('%')">%</button>
+  <button class="key operator" onclick="add('/')">÷</button>
+
+  <button class="key" onclick="add('7')">7</button>
+  <button class="key" onclick="add('8')">8</button>
+  <button class="key" onclick="add('9')">9</button>
+  <button class="key operator" onclick="add('*')">×</button>
+
+  <button class="key" onclick="add('4')">4</button>
+  <button class="key" onclick="add('5')">5</button>
+  <button class="key" onclick="add('6')">6</button>
+  <button class="key operator" onclick="add('-')">−</button>
+
+  <button class="key" onclick="add('1')">1</button>
+  <button class="key" onclick="add('2')">2</button>
+  <button class="key" onclick="add('3')">3</button>
+  <button class="key operator" onclick="add('+')">+</button>
+
+  <button class="key" onclick="add('(')">(</button>
+  <button class="key" onclick="add('0')">0</button>
+  <button class="key" onclick="add('.')">.</button>
+  <button class="key equal" onclick="calculate()">=</button>
+</section>
+
+<section class="history-panel" id="historyPanel">
+  <strong>Calculation History</strong>
+  <div id="historyList">No calculations yet.</div>
+  <button class="clear-history" onclick="clearHistory()">Clear history</button>
+</section>
+
+<footer>
+  POWERED BY VITCHWORKS<br><br>
+  BUILDING IDEAS. CREATING POSSIBILITIES.
+</footer>
+
+</main>
+
+<script>
+let expression = "";
+let history = [];
+
+const expDisplay = document.getElementById("expression");
+const resultDisplay = document.getElementById("result");
+
+function add(value) {
+  expression += value;
+  expDisplay.textContent = expression;
+}
+
+function clearAll() {
+  expression = "";
+  expDisplay.textContent = "Ready to calculate";
+  resultDisplay.textContent = "0";
+}
+
+function backspace() {
+  expression = expression.slice(0,-1);
+  expDisplay.textContent = expression || "Ready to calculate";
+}
+
+function calculate() {
+  if (!expression) return;
+
+  try {
+    let safe = expression
+      .replace(/×/g,"*")
+      .replace(/÷/g,"/")
+      .replace(/π/g,"pi")
+      .replace(/\^/g,"**")
+      .replace(/(\d+(?:\.\d+)?)%/g,"($1/100)")
+      .replace(/\bpi\b/g,"Math.PI")
+      .replace(/\bsin\(/g,"Math.sin(Math.PI/180*")
+      .replace(/\bcos\(/g,"Math.cos(Math.PI/180*")
+      .replace(/\btan\(/g,"Math.tan(Math.PI/180*")
+      .replace(/\bsqrt\(/g,"Math.sqrt(")
+      .replace(/\blog\(/g,"Math.log10(")
+      .replace(/\bln\(/g,"Math.log(");
+
+    if (!/^[0-9+\-*/().\s*MathPIlogscqrtant]+$/.test(safe)) {
+      throw new Error("Invalid expression");
+    }
+
+    const answer = Function('"use strict"; return (' + safe + ')')();
+
+    if (!Number.isFinite(answer)) {
+      throw new Error("Invalid result");
+    }
+
+    const formatted = Number(answer.toPrecision(12));
+
+    history.unshift({
+      question: expression,
+      answer: formatted
+    });
+
+    if (history.length > 30) history.pop();
+
+    resultDisplay.textContent = formatted;
+    expDisplay.textContent = expression;
+    expression = String(formatted);
+    renderHistory();
+
+  } catch(error) {
+    resultDisplay.textContent = "Error";
+  }
+}
+
+function toggleHistory() {
+  const panel = document.getElementById("historyPanel");
+  panel.style.display =
+    panel.style.display === "block" ? "none" : "block";
+}
+
+function renderHistory() {
+  const list = document.getElementById("historyList");
+
+  if (!history.length) {
+    list.textContent = "No calculations yet.";
+    return;
+  }
+
+  list.innerHTML = history.map(item =>
+    `<div class="history-item">
+      ${escapeHTML(item.question)}
+      <strong>= ${item.answer}</strong>
+    </div>`
+  ).join("");
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",
+    '"':"&quot;","'":"&#39;"
+  })[char]);
+}
+
+function clearHistory() {
+  history = [];
+  renderHistory();
+}
+</script>
+
+</body>
+</html>
