@@ -281,9 +281,9 @@ function calculate() {
       .replace(/\blog\(/g,"Math.log10(")
       .replace(/\bln\(/g,"Math.log(");
 
-    if (!/^[0-9+\-*\/().\s*MathPIlogscqrtantui]+$/.test(safe)) 
-    {
-
+    if (!/^[0-9+\-*\/().\s*MathPIlogscqrtantui]+$/.test(safe)) {
+  throw new Error("Invalid expression");
+}
 
 const answer = Function('"use strict"; return (' + safe + ')')();
 
