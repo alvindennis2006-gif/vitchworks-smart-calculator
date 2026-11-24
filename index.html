@@ -306,7 +306,11 @@ const answer = Function('"use strict"; return (' + safe + ')')();
     });
 
     if (history.length > 30) history.pop();
-
+try {
+  localStorage.setItem("vitchcalc-history", JSON.stringify(history));
+} catch (error) {
+  console.log("Could not save calculation history");
+  }
     resultDisplay.textContent = formatted;
     expDisplay.textContent = expression;
     expression = String(formatted);
