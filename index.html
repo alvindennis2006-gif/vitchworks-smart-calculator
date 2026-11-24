@@ -352,8 +352,15 @@ function escapeHTML(value) {
 
 function clearHistory() {
   history = [];
+
+  try {
+    localStorage.removeItem("vitchcalc-history");
+  } catch (error) {
+    console.log("Could not clear saved history");
+  }
+
   renderHistory();
-}
+      }
 </script>
 
 </body>
