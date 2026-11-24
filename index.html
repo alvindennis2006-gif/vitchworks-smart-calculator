@@ -282,8 +282,10 @@ function calculate() {
       .replace(/\bln\(/g,"Math.log(");
 
     if (!/^[0-9+\-*\/().\s*MathPIlogscqrtantu]+$/.test(safe)) {
+  throw new Error("Invalid expression");
+}
 
-    const answer = Function('"use strict"; return (' + safe + ')')();
+const answer = Function('"use strict"; return (' + safe + ')')();
 
     if (!Number.isFinite(answer)) {
       throw new Error("Invalid result");
