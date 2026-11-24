@@ -244,6 +244,13 @@ footer {
 let expression = "";
 let history = [];
 
+try {
+  history = JSON.parse(localStorage.getItem("vitchcalc-history") || "[]");
+  if (!Array.isArray(history)) history = [];
+} catch (error) {
+  history = [];
+}
+
 const expDisplay = document.getElementById("expression");
 const resultDisplay = document.getElementById("result");
 
